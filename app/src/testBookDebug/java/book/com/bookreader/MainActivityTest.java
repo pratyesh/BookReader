@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({UrlUtils.class})
+@PrepareForTest({UrlUtils.class, CommonFunction.class})
 public class MainActivityTest {
     private static final String URL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&";
     private MainActivity spyMainActivity;
@@ -54,9 +54,16 @@ public class MainActivityTest {
 
     @Test
     public void onBottomReached() {
+        PowerMockito.mockStatic(CommonFunction.class);
+        Mockito.when(CommonFunction.isNetWorkAvailable(spyMainActivity)).thenReturn(false);
         spyMainActivity.currentPage = 2;
         spyMainActivity.totalPages = 10;
         PowerMockito.doNothing().when(spyMainActivity.mMainActivityPresenter).fetchAndLoadData(Mockito.anyString(), Mockito.anyInt());
+        PowerMockito.doNothing().when(spyMainActivity).networkFailed();
+        spyMainActivity.onBottomReached(10);
+        Mockito.verify(spyMainActivity, Mockito.times(1)).networkFailed();
+
+        Mockito.when(CommonFunction.isNetWorkAvailable(spyMainActivity)).thenReturn(true);
         spyMainActivity.onBottomReached(10);
         Mockito.verify(spyMainActivity.mMainActivityPresenter, Mockito.times(1)).fetchAndLoadData(Mockito.anyString(), Mockito.anyInt());
     }

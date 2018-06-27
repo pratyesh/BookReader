@@ -7,4 +7,6 @@ public interface MainActivityView {
     void showProgressBar();
 
     void hideProgressBar();
+
+    void networkFailed();
 }

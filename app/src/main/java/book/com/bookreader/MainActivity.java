@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements MainActivityView, OnBottomReachedListener, SearchView.OnQueryTextListener {
 
@@ -51,7 +52,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
         query = typedQuery;
         currentPage = 0;
         reloadOnTextSearch = true;
-        mMainActivityPresenter.fetchAndLoadData(query, currentPage);
+        if (CommonFunction.isNetWorkAvailable(this)) {
+            mMainActivityPresenter.fetchAndLoadData(query, currentPage);
+        } else {
+            networkFailed();
+        }
         return false;
     }
 
@@ -121,6 +126,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
             return;
         }
         scrolledPosition = position;
-        mMainActivityPresenter.fetchAndLoadData(query, currentPage);
+        if (CommonFunction.isNetWorkAvailable(this)) {
+            mMainActivityPresenter.fetchAndLoadData(query, currentPage);
+        } else {
+            networkFailed();
+        }
+    }
+
+    @Override
+    public void networkFailed() {
+        hideProgressBar();
+        Toast.makeText(this, "Internet Connection FAiled \n Try Again later", Toast.LENGTH_LONG).show();
     }
 }
