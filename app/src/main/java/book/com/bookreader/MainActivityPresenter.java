@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 public class MainActivityPresenter implements MyAsyncTask.MyAsyncTaskListener {
 
     protected MainActivityView mMainActivityView;
-    protected MyAsyncTask mMyAsyncTask;
+    protected MyRxJavaCaller mMyAsyncTask;
 
     public MainActivityPresenter(@NonNull MainActivityView mainActivityView) {
         mMainActivityView = mainActivityView;
@@ -14,24 +14,28 @@ public class MainActivityPresenter implements MyAsyncTask.MyAsyncTaskListener {
     public void fetchAndLoadData(String query, int currentPage) {
         mMainActivityView.showProgressBar();
         final String completeUrl = UrlUtils.getUrl(query, String.valueOf(1 + currentPage));
-        mMyAsyncTask = new MyAsyncTask(completeUrl, this);
-        executeApiCall();
+        mMyAsyncTask = new MyRxJavaCaller(this);
+        executeApiCall(completeUrl);
     }
 
 
-    protected void executeApiCall() {
+    protected void executeApiCall(String completeUrl) {
         if (mMyAsyncTask != null) {
-            mMyAsyncTask.execute();
+            mMyAsyncTask.execute(completeUrl);
         }
     }
 
     @Override
     public void onTaskCompleted(ResponseDetails dataModel) {
-        mMainActivityView.hideProgressBar();
+        if (mMainActivityView != null) {
+            mMainActivityView.hideProgressBar();
+        }
         if (dataModel == null || dataModel.getPhotos() == null) {
             return;
         }
-        mMainActivityView.setUiOnTaskCompleted(dataModel);
+        if (mMainActivityView != null) {
+            mMainActivityView.setUiOnTaskCompleted(dataModel);
+        }
     }
 
     public void onDestroy() {

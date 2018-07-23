@@ -33,13 +33,13 @@ public class MainActivityPresenterTest {
         PowerMockito.mockStatic(UrlUtils.class);
         PowerMockito.mockStatic(Uri.class);
         MainActivityPresenter spyMainActivityPresenter = PowerMockito.spy(mMainActivityPresenter);
-        PowerMockito.doNothing().when(spyMainActivityPresenter).executeApiCall();
+        PowerMockito.doNothing().when(spyMainActivityPresenter).executeApiCall(Mockito.anyString());
 
         spyMainActivityPresenter.fetchAndLoadData(Mockito.anyString(), Mockito.anyInt());
         Mockito.verify(mockMainActivityView, Mockito.times(1)).showProgressBar();
         PowerMockito.verifyStatic(Mockito.times(1));
         UrlUtils.getUrl(Mockito.anyString(), Mockito.anyString());
-        Mockito.verify(spyMainActivityPresenter, Mockito.times(1)).executeApiCall();
+        Mockito.verify(spyMainActivityPresenter, Mockito.times(1)).executeApiCall(Mockito.anyString());
     }
 
     @Test
