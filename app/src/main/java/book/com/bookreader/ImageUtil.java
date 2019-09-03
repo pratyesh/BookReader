@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Downloader;
 import com.squareup.picasso.LruCache;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -22,7 +22,6 @@ public class ImageUtil {
     private final WeakReference<Context> context;
     private boolean singletonBuilt;
     private static final int PICASSO_DISK_CACHE_SIZE = 1024 * 1024 * 30; // Size in bytes (30 MB)
-    private static final String PICASSO_IMAGE_DIR = "/cache/picasso-cache";
 
     public ImageUtil(final Context context) {
         this.context = new WeakReference<>(context);
@@ -57,7 +56,7 @@ public class ImageUtil {
                 singletonBuilt = true;
             }
         }
-        return Picasso.with(ctx);
+        return Picasso.get();
     }
 
     private void setUpDownloader(@NonNull final Picasso.Builder builder, @NonNull final Context context) {
